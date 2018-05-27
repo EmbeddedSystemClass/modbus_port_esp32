@@ -1,0 +1,130 @@
+menu "Modbus"
+
+config LIB_FREEMODBUS
+    bool
+    default y
+
+config LIB_FREEMODBUS_ASCII
+    bool "Enable Modbus ASCII support"
+    default n
+
+config LIB_FREEMODBUS_ASCII_TIMEOUT
+    int "Character timeout value for Modbus ASCII, seconds"
+    depends on LIB_FREEMODBUS_ASCII
+    default 1
+    help
+        The character timeout value is not fixed for Modbus ASCII and is therefore
+        a configuration option. It should be set to the maximum expected delay
+        time of the network.
+
+config LIB_FREEMODBUS_ASCII_TIMEOUT_WAIT
+    int "Timeout to wait in ASCII prior to enabling transmitter, ms"
+    depends on LIB_FREEMODBUS_ASCII
+    default 0
+    help
+        If defined the function calls vMBPortSerialDelay with the argument
+        MB_ASCII_TIMEOUT_WAIT_BEFORE_SEND_MS to allow for a delay before
+        the serial transmitter is enabled. This is required because some
+        targets are so fast that there is no time between receiving and
+        transmitting the frame. If the master is to slow with enabling its 
+        receiver then he will not receive the response correctly.
+
+config LIB_FREEMODBUS_USE_RTU
+    bool "Enable Modbus RTU support"
+    default y
+
+config LIB_FREEMODBUS_TCP
+    bool "Enable Modbus TCP support"
+    default n
+    
+config LIB_FREEMODBUS_SLAVE
+    bool "Enable Modbus slave device"
+    default n
+
+config LIB_FREEMODBUS_MASTER
+    bool "Enable Modbus master device"
+    default y
+    
+menu "Modbus functions"
+
+config LIB_FREEMODBUS_FUNC_HANDLERS_MAX
+    int "Maximum number of Modbus functions"
+    default 16
+    help 
+        The maximum number of supported Modbus functions must be greater than
+        the sum of all enabled functions and custom function
+        handlers. If set to small adding more functions will fail.
+
+config LIB_FREEMODBUS_FUNC_SLAVEID
+    bool "Enable 'Report Slave ID' function"
+    default y
+
+config LIB_FREEMODBUS_SLAVEID_BUF
+    int "Number of bytes which should be allocated for the Report Slave ID command"
+    depends on LIB_FREEMODBUS_FUNC_SLAVEID
+    default 32
+    help
+        This number limits the maximum size of the additional segment in the
+        report slave id function. See 'eMBSetSlaveID()' for more information on
+        how to set this value.        
+        
+config LIB_FREEMODBUS_FUNC_READ_INPUT
+    bool "Enable 'Read Input Registers' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_READ_HOLDING
+    bool "Enable 'Read Holding Registers' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_WRITE_HOLDING
+    bool "Enable 'Write Single Register' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_WRITE_MULTI_HOLDING
+    bool "Enable 'Write Multiple registers' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_READ_COILS
+    bool "Enable 'Read Coils' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_WRITE_COIL
+    bool "Enable 'Write Coils' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_WRITE_MULTI_COILS
+    bool "Enable 'Write Multiple Coils' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_READ_DISCRETE
+    bool "Enable 'Read Discrete Inputs' function"
+    default y
+
+config LIB_FREEMODBUS_FUNC_READWRITE_HOLDING
+    bool "Enable 'Read/Write Multiple Registers' function"
+    default y
+
+endmenu
+
+config LIB_FREEMODBUS_MASTER_DELAY_MS_CONVERT
+    int "Broadcast frame conversion time, ms"
+    default 200
+    help
+        If master send a broadcast frame, the master will wait time of convert to delay,
+        then master can send other frame.
+        
+config LIB_FREEMODBUS_TIMEOUT_MS_RESPOND
+    int "Master respond timeout, ms"
+    default 100
+    help
+        If master send a frame which is not broadcast, the master will wait sometime for slave.
+        And if slave is not respond in this time, the master will process this timeout error.
+        Then master can send other frame.
+        
+config LIB_FREEMODBUS_MASTER_TOTAL_SLAVE_NUM
+    int "Total slaves in Modbus Master system"
+    default 16
+    help
+        The slave ID must be continuous from 1
+
+endmenu
